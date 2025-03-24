@@ -1,43 +1,112 @@
 #include <stdio.h>
 
-// Desafio Super Trunfo - Países
-// Tema 2 - Comparação das Cartas
-// Este código inicial serve como base para o desenvolvimento do sistema de comparação de cartas de cidades. 
-// Siga os comentários para implementar cada parte do desafio.
+// Estrutura para Facilitar na criação das cartas--------------------------------------------
+struct CartaSuperTrunfo {
+    char estado;                                      // Estado
+    char codigo[4];                                   // Código da cidade
+    char nomeCidade[50];                              // Nome da cidade
+    int populacao;                                    // População da cidade
+    float area;                                       // Área da cidade em km²
+    float pib;                                        // Produto interno bruto da cidade
+    unsigned int pontosTuristicos;                    // Contagem de pontos turísticos da cidade
+    float densidadePopulacao, pibPerCapita, superPoder; // Densidade, PIB per capita e Superpoder
+};
 
-int main() {
-    // Definição das variáveis para armazenar as propriedades das cidades
-    // Você pode utilizar o código do primeiro desafio
+//--------------------------------------------------------------------------------------------------------------------
 
-    
-    // Cadastro das Cartas:
-    // Implemente a lógica para solicitar ao usuário que insira os dados das cidades
-    // utilizando a função scanf para capturar as entradas.
-    // utilize o código do primeiro desafio
+struct CartaSuperTrunfo carta1, carta2;  // Definição da quantidade de cartas
 
-    // Exemplo:
-    // printf("Digite o código da cidade: ");
-    // scanf("%s", codigo);
-    // 
-    // (Repita para cada propriedade)
+//------------------------------------------------------------------------------------------------------------------
 
-    // Comparação de Cartas:
-    // Desenvolva a lógica de comparação entre duas cartas.
-    // Utilize estruturas de decisão como if, if-else para comparar atributos como população, área, PIB, etc.
+// Função para preencher as cartas evitando repetições
+void preencherCarta(struct CartaSuperTrunfo *carta, const char *nomeCarta) {
+    printf("\n===== Preenchendo %s =====\n", nomeCarta);
 
-    // Exemplo:
-    // if (populacaoA > populacaoB) {
-    //     printf("Cidade 1 tem maior população.\n");
-    // } else {
-    //     printf("Cidade 2 tem maior população.\n");
-    // }
+    printf("Escolha uma letra entre 'A' e 'H' para representar um dos oito estados: ");
+    scanf(" %c", &carta->estado);
 
-    // Exibição dos Resultados:
-    // Após realizar as comparações, exiba os resultados para o usuário.
-    // Certifique-se de que o sistema mostre claramente qual carta venceu e com base em qual atributo.
+    printf("Escolha um número de 1 a 4 para o código da carta: ");
+    int numeroCodigo;
+    scanf(" %d", &numeroCodigo);
+    sprintf(carta->codigo, "%c%02d", carta->estado, numeroCodigo);
 
-    // Exemplo:
-    // printf("A cidade vencedora é: %s\n", cidadeVencedora);
+    getchar();  // Limpa o buffer antes de ler a próxima string
+    printf("Digite o nome da Cidade: ");
+    scanf(" %[^\n]", carta->nomeCidade);
+
+    printf("Digite a População: ");
+    scanf("%d", &carta->populacao);
+
+    printf("Digite a Área da Cidade (em km²): ");
+    scanf("%f", &carta->area);
+
+    printf("Digite o PIB (em bilhões): ");
+    scanf("%f", &carta->pib);
+
+    printf("Digite a Quantidade de pontos turísticos: ");
+    scanf("%d", &carta->pontosTuristicos);
+
+    carta->densidadePopulacao = carta->populacao / carta->area;
+    carta->pibPerCapita = (carta->pib * 1e9) / carta->populacao;
+    carta->superPoder = carta->populacao + carta->area + carta->pib + carta->pontosTuristicos + carta->pibPerCapita;
+
+    printf("✅ %s registrada com sucesso!\n", nomeCarta);
+}
+
+//------------------------------------------------------------------------------------------------------------------
+
+// Função para comparar cartas com base no atributo escolhido pelo usuário
+void compararCartas(int atributo) {
+    printf("\n📊 Comparação de cartas:\n\n");
+    float valor1, valor2;
+    const char *nomeAtributo;
+
+    switch (atributo) {
+        case 1: valor1 = carta1.populacao; valor2 = carta2.populacao; nomeAtributo = "População"; break;
+        case 2: valor1 = carta1.area; valor2 = carta2.area; nomeAtributo = "Área"; break;
+        case 3: valor1 = carta1.pib; valor2 = carta2.pib; nomeAtributo = "PIB"; break;
+        case 4: valor1 = carta1.pontosTuristicos; valor2 = carta2.pontosTuristicos; nomeAtributo = "Pontos Turísticos"; break;
+        case 5: valor1 = carta1.densidadePopulacao; valor2 = carta2.densidadePopulacao; nomeAtributo = "Densidade Populacional"; break;
+        case 6: valor1 = carta1.pibPerCapita; valor2 = carta2.pibPerCapita; nomeAtributo = "PIB per Capita"; break;
+        case 7: valor1 = carta1.superPoder; valor2 = carta2.superPoder; nomeAtributo = "Superpoder"; break;
+        default: printf("❌ Opção inválida!\n"); return;
+    }
+
+    if (valor1 > valor2) {
+        printf("🔥 A carta 1 - %s venceu na disputa de %s!\n", carta1.nomeCidade, nomeAtributo);
+    } else if (valor2 > valor1) {
+        printf("🔥 A carta 2 - %s venceu na disputa de %s!\n", carta2.nomeCidade, nomeAtributo);
+    } else {
+        printf("⚖️ Empate! Ambas as cidades têm o mesmo valor de %s.\n", nomeAtributo);
+    }
+}
+
+//------------------------------------------------------------------------------------------------------------------
+
+int main(void) {
+    // Mensagem de boas-vindas
+    printf("****  Bem-vindo ao Super Trunfo - Cidades!  ****\n");
+    printf("** Nesta versão, jogaremos com duas cartas. **\n");
+    printf("** Escolha um atributo para comparar e veja quem vence! **\n\n");
+
+    // Preenchendo as cartas
+    preencherCarta(&carta1, "Carta 1");
+    preencherCarta(&carta2, "Carta 2");
+
+    // Menu interativo
+    int escolha;
+    do {
+        printf("\n📜 Escolha um atributo para comparar:\n");
+        printf("1 - População\n2 - Área\n3 - PIB\n4 - Pontos Turísticos\n5 - Densidade Populacional\n6 - PIB per Capita\n7 - Superpoder\n8 - Sair\n");
+        printf("Digite sua opção: ");
+        scanf("%d", &escolha);
+
+        if (escolha != 8) {
+            compararCartas(escolha);
+        }
+    } while (escolha != 8);
+
+    printf("👋 Obrigado por jogar! Até a próxima.\n");
 
     return 0;
 }
